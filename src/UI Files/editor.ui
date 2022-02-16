@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>editorWindow</class>
+ <widget class="QMainWindow" name="editorWindow">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
-    <height>337</height>
+    <width>515</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,37 @@
      </layout>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnImport">
+        <property name="text">
+         <string>Import CSV</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnExport">
+        <property name="text">
+         <string>Export CSV</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QTableWidget" name="tblEdit">
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
@@ -57,7 +88,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>537</width>
+     <width>515</width>
      <height>21</height>
     </rect>
    </property>
@@ -68,10 +99,10 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="act_import"/>
+    <addaction name="act_export"/>
     <addaction name="separator"/>
     <addaction name="act_save"/>
-    <addaction name="actionRestore_Default"/>
     <addaction name="separator"/>
     <addaction name="act_close"/>
    </widget>
@@ -88,12 +119,12 @@
     <string>Save as (Backup)</string>
    </property>
   </action>
-  <action name="actionRestore_Default">
+  <action name="act_export">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Restore Default</string>
+    <string>Export CSV</string>
    </property>
   </action>
   <action name="act_close">
@@ -101,12 +132,12 @@
     <string>Close</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="act_import">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>Import CSV</string>
    </property>
   </action>
  </widget>

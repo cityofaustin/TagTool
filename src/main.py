@@ -11,6 +11,8 @@ import sys
 import pickle
 import platform
 
+from sqlalchemy import true
+
 # Import UI files
 from ui.mainWindow import Ui_MainWindow
 from ui.editor import Ui_editorWindow
@@ -52,6 +54,10 @@ class editorWindow(QtWidgets.QMainWindow, Ui_editorWindow):
         self.btn_deleteEntry.clicked.connect(deleteEntry)
         self.btn_save.clicked.connect(saveAndClose)
         self.tblEdit.cellChanged.connect(cellTest)
+        self.act_import.triggered.connect(importCSV)
+        self.act_export.triggered.connect(exportCSV)
+        self.btnImport.clicked.connect(importCSV)
+        self.btnExport.clicked.connect(exportCSV)
 
 class aboutWindow(QtWidgets.QMainWindow, Ui_aboutWindow):
     def __init__(self):
@@ -125,6 +131,37 @@ def errorMessage(text, title):
 def showEditor():
     uiEditor.show()
     populateEditor()
+
+
+def importCSV():
+    try:
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV or Excel files (*.csv *.xlsx)")[0]
+    except:
+        print("No file found")
+    if filename:
+        global dfEditor
+        #tempDF = pd.DataFrame
+        tempDF = pd.read_csv(filename)
+        tempDF.columns = tempDF.columns.str.lower()
+        if 'category' in tempDF.columns and 'keywords' in tempDF.columns and 'blacklist' in tempDF.columns:
+            print("SUCCESS")
+            tempDF.drop(tempDF.columns.difference(['category', 'keywords','blacklist']), 1, inplace=True)
+            tempDF.rename(columns={'category': 'Category', 'keywords': 'Keywords', 'blacklist': 'Blacklist'}, inplace=True)
+            tempDF = tempDF[["Category", "Keywords", "Blacklist"]]
+            dfEditor = tempDF
+            write_dt_to_Editor(dfEditor, editorTable)
+        else:
+            errorMessage("Please make sure Category, Keywords, and Blacklist\nare all column names in the file and try again.", "Error reading CSV")
+
+def exportCSV():
+    global dfEditor
+    try:
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', os.getcwd(), "CSV Files(*.csv)")[0]
+        print(filename)
+        dfEditor.to_csv(str(filename), index=False)
+    except:
+        pass
+
 
 def showNewItem():
     uiNewItem.txtEntryName.clear()
