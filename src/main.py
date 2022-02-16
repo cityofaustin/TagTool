@@ -11,8 +11,6 @@ import sys
 import pickle
 import platform
 
-from sqlalchemy import true
-
 # Import UI files
 from ui.mainWindow import Ui_MainWindow
 from ui.editor import Ui_editorWindow
