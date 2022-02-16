@@ -133,7 +133,7 @@ def showEditor():
 
 def importCSV():
     try:
-        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV or Excel files (*.csv *.xlsx)")[0]
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV files(*.csv)")[0]
     except:
         print("No file found")
     if filename:
