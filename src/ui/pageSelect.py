@@ -28,6 +28,7 @@ class Ui_pageWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tblPage = QtWidgets.QTableWidget(self.centralwidget)
+        self.tblPage.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tblPage.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.tblPage.setObjectName("tblPage")
         self.tblPage.setColumnCount(0)
