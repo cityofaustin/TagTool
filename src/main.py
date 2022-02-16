@@ -2,6 +2,8 @@
 TagTool - 2022
 author: SappI
 '''
+from csv import excel
+from fnmatch import fnmatch
 import os
 import pandas as pd
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -9,14 +11,17 @@ import sys
 import pickle
 import platform
 
+from sqlalchemy import true
+
 # Import UI files
 from ui.mainWindow import Ui_MainWindow
 from ui.editor import Ui_editorWindow
 from ui.diag import Ui_aboutWindow
 from ui.newItem import Ui_newItemWindow
+from ui.pageSelect import Ui_pageWindow
 
 # Update this with each release
-versionNumber = 1.0
+versionNumber = "1.5.0"
 appPath = os.path.dirname(__file__)
 platName = platform.system()
 
@@ -49,6 +54,10 @@ class editorWindow(QtWidgets.QMainWindow, Ui_editorWindow):
         self.btn_deleteEntry.clicked.connect(deleteEntry)
         self.btn_save.clicked.connect(saveAndClose)
         self.tblEdit.cellChanged.connect(cellTest)
+        self.act_import.triggered.connect(importCSV)
+        self.act_export.triggered.connect(exportCSV)
+        self.btnImport.clicked.connect(importCSV)
+        self.btnExport.clicked.connect(exportCSV)
 
 class aboutWindow(QtWidgets.QMainWindow, Ui_aboutWindow):
     def __init__(self):
@@ -65,13 +74,25 @@ class newItem(QtWidgets.QMainWindow, Ui_newItemWindow):
         self.btnCreate.clicked.connect(createNewItem)
         self.btnCancel.clicked.connect(closeNewItem)
 
+class pageSelect(QtWidgets.QMainWindow, Ui_pageWindow):
+    def __init__(self):
+        super(pageSelect, self).__init__()
+        self.setupUi(self)
+        self.btnForward.clicked.connect(lambda: changePage(False))
+        self.btnBack.clicked.connect(lambda: changePage(True))
+        self.btnOpen.clicked.connect(openPage)
+
 # Globals
 df = pd.DataFrame
 dfEditor = pd.DataFrame
 dfNew = pd.DataFrame
+dfPage = pd.DataFrame
 fileLoaded = False
 activeColumn = 0
 editorLoaded = False
+pageNum = 0
+numberOfPages = 0
+excelFile = ''
 
 # Data from res.dat will be stored in this dictionary
 iconDict = {}
@@ -81,8 +102,12 @@ app = QtWidgets.QApplication([])
 
 # Create a DF
 def createDF(fName):
-    df = pd.read_csv(fName)
-    return df
+    if ".csv" in fName:
+        df = pd.read_csv(fName)
+        return df
+    elif ".xlsx" in fName:
+        df = pd.read_excel(fName)
+        return df
 
 def readDat(datFile):
     # Reads resource data packed in the res.dat file
@@ -107,6 +132,37 @@ def showEditor():
     uiEditor.show()
     populateEditor()
 
+
+def importCSV():
+    try:
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV or Excel files (*.csv *.xlsx)")[0]
+    except:
+        print("No file found")
+    if filename:
+        global dfEditor
+        #tempDF = pd.DataFrame
+        tempDF = pd.read_csv(filename)
+        tempDF.columns = tempDF.columns.str.lower()
+        if 'category' in tempDF.columns and 'keywords' in tempDF.columns and 'blacklist' in tempDF.columns:
+            print("SUCCESS")
+            tempDF.drop(tempDF.columns.difference(['category', 'keywords','blacklist']), 1, inplace=True)
+            tempDF.rename(columns={'category': 'Category', 'keywords': 'Keywords', 'blacklist': 'Blacklist'}, inplace=True)
+            tempDF = tempDF[["Category", "Keywords", "Blacklist"]]
+            dfEditor = tempDF
+            write_dt_to_Editor(dfEditor, editorTable)
+        else:
+            errorMessage("Please make sure Category, Keywords, and Blacklist\nare all column names in the file and try again.", "Error reading CSV")
+
+def exportCSV():
+    global dfEditor
+    try:
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', os.getcwd(), "CSV Files(*.csv)")[0]
+        print(filename)
+        dfEditor.to_csv(str(filename), index=False)
+    except:
+        pass
+
+
 def showNewItem():
     uiNewItem.txtEntryName.clear()
     uiNewItem.show()
@@ -120,7 +176,6 @@ def colorRows(table, column, r, g, b):
     col = column
     for row in range(table.rowCount()):
         table.item(row, col).setBackground(QtGui.QColor(r,g,b))
-
 
 def createNewItem():
     # Add new item to the DF and then update the editor table with updated DF
@@ -160,22 +215,94 @@ def setEditorStatus(text):
 def quitApp():
     sys.exit()
 
+def selectPage(fName):
+    global dfPage
+    global pageTable
+    global pageNum
+    global numberOfPages
+    global excelFile
+    pageNum = 0
+    uiPageSelect.show()
+    # Store the excel filename as a global var
+    excelFile = fName
+    xls = pd.ExcelFile(excelFile)
+    numberOfPages = len(xls.sheet_names)
+    # Read in the excel file and get the sheet name based off
+    # xls's index to pageNum
+    dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+    write_dt_to_pageSelect(dfPage, pageTable)
+    uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
+
+
+def changePage(isBack = False):
+    global pageNum
+    global dfPage
+    global numberOfPages
+    global excelFile
+    try:
+        if isBack == False:
+            if pageNum < numberOfPages - 1:
+                pageNum = pageNum + 1
+                # Have to create a new xls item here
+                # so we can access page names.
+                xls = pd.ExcelFile(excelFile)
+                dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+                write_dt_to_pageSelect(dfPage, pageTable)
+                uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
+        else:
+            if pageNum > 0:
+                pageNum = pageNum - 1
+                # Have to create a new xls item here
+                # so we can access page names.
+                xls = pd.ExcelFile(excelFile)
+                dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+                write_dt_to_pageSelect(dfPage, pageTable)
+                uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
+    except:
+        print("null value")
+
+def openPage():
+    global df
+    global dfPage
+    uiPageSelect.close()
+    # Store the contents of dfPage into the primary
+    # df object and write it to the table.
+    df = dfPage
+    write_dt_to_qTable(df, table)
+    ui.btnSetColumn.setEnabled(True)
+
 def openFile():
     global table
     global df
     global fileLoaded
     try:
-        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV Files(*.csv)")[0]
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV or Excel files (*.csv *.xlsx)")[0]
     except:
         print("No file found")
     if filename:
-        try:
-            df = createDF(filename)
-            write_dt_to_qTable(df, table)
-            fileLoaded = True
-            ui.btnSetColumn.setEnabled(True)
-        except:
-            errorMessage("Error opening file", "Error")
+        if ".csv" in filename:
+            try:
+                df = createDF(filename)
+                write_dt_to_qTable(df, table)
+                fileLoaded = True
+                ui.btnSetColumn.setEnabled(True)
+            except:
+                errorMessage("Error opening file", "Error")
+        if ".xlsx" in filename:
+            xls = pd.ExcelFile(filename)
+            # If the length of the excel file is 1 just
+            # load that into the DF
+            if len(xls.sheet_names) == 1:
+                df = createDF(filename)
+                write_dt_to_qTable(df, table)
+                fileLoaded = True
+                ui.btnSetColumn.setEnabled(True)
+            # If there are more than 1 page in the excel file
+            # we then run it through the select page screen
+            elif len(xls.sheet_names) > 1:
+                selectPage(filename)
+            else:
+                print("Empty Excel file")
     else:
         print("Empty filename")
 
@@ -365,6 +492,19 @@ def write_dt_to_Editor(df, editorTable):
                 editorTable.setItem(row, col, QtWidgets.QTableWidgetItem(str(df_array[row,col])))
         editorLoaded = True
 
+def write_dt_to_pageSelect(df, pageTable):
+    #global editorLoaded
+    #editorLoaded = False
+    headers = list(df)
+    pageTable.setRowCount(df.shape[0])
+    pageTable.setColumnCount(df.shape[1])
+    pageTable.setHorizontalHeaderLabels(headers)
+    df_array = df.values
+    for row in range(df.shape[0]):
+        for col in range(df.shape[1]):
+            pageTable.setItem(row, col, QtWidgets.QTableWidgetItem(str(df_array[row,col])))
+    
+
 def newEntry():
     showNewItem()
 
@@ -436,12 +576,17 @@ ui = mainWindow()
 uiEditor = editorWindow()
 uiDiag = aboutWindow()
 uiNewItem = newItem()
+uiPageSelect = pageSelect()
+
+
+newItem.show
 
 # Variables
 table = ui.tableWidget
 progressBar = ui.progressBar
 saveButton = ui.btn_save
 editorTable = uiEditor.tblEdit
+pageTable = uiPageSelect.tblPage
 editorStatusBar = uiEditor.statusbar
 
 # Load in the image data from res.dat

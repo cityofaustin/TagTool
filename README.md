@@ -1,6 +1,13 @@
 ### City of Austin Innovation Office
+
 # TagTool 🏷️
+
+---
+
 TagTool is a small application that helps with tagging CSV (and later Excel files) with keywords. 
+
+### [User Guide](userguide/README.md) | [Build Guide](buildguide/README.md)
+
 
 **How it works**
 
@@ -8,10 +15,4 @@ TagTool works by creating categories that are accompanied by Keywords and Blackl
 
 There is a built in keyword editor  where categories can be created, keywords and blacklist items can be modified/added/deleted. Once the keywords are set up, it's as simple as selecting the column and hitting one of the tagging options.
 
-**Tag All**
-
-Tag All puts all of the categories in a single column, seperated by a comma. 
-
-**Tag Individual**
-
-Tag Individual will create a column for each category. If there is a match in that row, it will put a Y in that category.
+For instructions on using it, please check out the user guide.
