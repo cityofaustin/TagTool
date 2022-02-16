@@ -160,7 +160,6 @@ def exportCSV():
     except:
         pass
 
-
 def showNewItem():
     uiNewItem.txtEntryName.clear()
     uiNewItem.show()
@@ -230,7 +229,6 @@ def selectPage(fName):
     dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
     write_dt_to_pageSelect(dfPage, pageTable)
     uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
-
 
 def changePage(isBack = False):
     global pageNum
@@ -412,10 +410,8 @@ def tagEach():
 
             for word in keywords:                
                 if len(word) > 0:
-                    #print(word)
                     if word in string.lower() and check == False:                     
                         dfNew[category].iloc[stringIndex] = 'Y'
-                        #bustedCount += 1
                         check = True
         progressBar.setValue(stringIndex)
         app.processEvents()
@@ -491,8 +487,6 @@ def write_dt_to_Editor(df, editorTable):
         editorLoaded = True
 
 def write_dt_to_pageSelect(df, pageTable):
-    #global editorLoaded
-    #editorLoaded = False
     headers = list(df)
     pageTable.setRowCount(df.shape[0])
     pageTable.setColumnCount(df.shape[1])
@@ -575,9 +569,6 @@ uiEditor = editorWindow()
 uiDiag = aboutWindow()
 uiNewItem = newItem()
 uiPageSelect = pageSelect()
-
-
-newItem.show
 
 # Variables
 table = ui.tableWidget
