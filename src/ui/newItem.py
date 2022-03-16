@@ -54,7 +54,17 @@ class Ui_newItemWindow(object):
 
     def retranslateUi(self, newItemWindow):
         _translate = QtCore.QCoreApplication.translate
-        newItemWindow.setWindowTitle(_translate("newItemWindow", "New Item"))
-        self.lblEntry.setText(_translate("newItemWindow", "Entry Name:"))
+        newItemWindow.setWindowTitle(_translate("newItemWindow", "New Category"))
+        self.lblEntry.setText(_translate("newItemWindow", "Category Name:"))
         self.btnCreate.setText(_translate("newItemWindow", "Create"))
         self.btnCancel.setText(_translate("newItemWindow", "Cancel"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    newItemWindow = QtWidgets.QMainWindow()
+    ui = Ui_newItemWindow()
+    ui.setupUi(newItemWindow)
+    newItemWindow.show()
+    sys.exit(app.exec_())

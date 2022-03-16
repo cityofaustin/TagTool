@@ -193,9 +193,9 @@ def saveAndClose():
     global dfEditor
     try:
         if platName == 'Darwin':
-            dfEditor.to_json(f'{appPath}/default.json', orient='records')
+            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
         else:
-            dfEditor.to_json('default.json', orient='records')
+            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
         uiEditor.close()
     except:
         errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.")
@@ -203,9 +203,9 @@ def saveAndClose():
 def saveDefault():
     global df
     if platName == 'Darwin':
-        dfEditor.to_json(f'{appPath}/default.json', orient='records')
+        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
     else:
-        dfEditor.to_json('default.json', orient='records')
+        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
     setEditorStatus("Default config saved")
 
 def setEditorStatus(text):
@@ -318,9 +318,9 @@ def tagAll():
     dfNew = dfNew.astype(str)
 
     if platName == 'Darwin':
-        dfJson = pd.read_json(f'{appPath}/default.json')
+        dfJson = pd.read_json(f'{dataLoc}/default.json')
     else:
-        dfJson = pd.read_json("default.json")
+        dfJson = pd.read_json(f'{dataLoc}/default.json')
 
     check = False
     commentList = []
@@ -382,9 +382,9 @@ def tagEach():
     dfNew = dfNew.astype(str)
 
     if platName == 'Darwin':
-        dfJson = pd.read_json(f'{appPath}/default.json')
+        dfJson = pd.read_json(f'{dataLoc}/default.json')
     else:
-        dfJson = pd.read_json("default.json")
+        dfJson = pd.read_json(f'{dataLoc}/default.json')
     check = False
     commentList = []
     
@@ -455,9 +455,9 @@ def populateEditor():
     editorLoaded = False
     try:
         if platName == 'Darwin':
-            dfEditor = pd.read_json(f'{appPath}/default.json')
+            dfEditor = pd.read_json(f'{dataLoc}/default.json')
         else:
-            dfEditor = pd.read_json("default.json")
+            dfEditor = pd.read_json(f'{dataLoc}/default.json')
 
         write_dt_to_Editor(dfEditor, editorTable)
         editorLoaded = True
@@ -546,6 +546,14 @@ def imageFromBase64(base64):
     pixmap.loadFromData(QtCore.QByteArray.fromBase64(base64))
     return pixmap
 
+def createDefaultJSON():
+    data = {'Category':['Category'],
+            'Keywords':[''],
+            'Blacklist':['']}
+    JSONdf = pd.DataFrame(data)
+    JSONdf.to_json(f'{dataLoc}/default.json', orient='records')
+
+
 def closeAbout():
     uiDiag.close()
 
@@ -584,6 +592,15 @@ editorStatusBar = uiEditor.statusbar
 loadData()
 
 print(dataLoc)
+
+if os.path.exists(dataLoc):
+    if not os.path.exists(f'{dataLoc}/default.json'):
+        createDefaultJSON()
+else:
+    print("Location doesn't exist... creating!")
+    os.makedirs(dataLoc)
+    createDefaultJSON()
+
 
 # Show main window and exec the program
 ui.show()
