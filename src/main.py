@@ -345,7 +345,7 @@ def tagAll():
             for word in blacklistWords:
                 if len(word) > 0:
                     if word in string.lower():
-                        string.replace(item, '')
+                        string = string.replace(word, '')
 
             # Loop through the keywords and look for a match
             # if a match is found, we can enable the CHECK
@@ -406,7 +406,7 @@ def tagEach():
             for word in blacklistWords:
                 if len(word) > 0:
                     if word in string.lower():
-                        string.replace(item, '')
+                        string = string.replace(word, '')
 
             for word in keywords:                
                 if len(word) > 0:
