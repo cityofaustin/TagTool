@@ -23,6 +23,7 @@ versionNumber = "1.5.0"
 appPath = os.path.dirname(__file__)
 platName = platform.system()
 dataLoc = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.DataLocation)[0] + f'/{appName}'
+desktopLoc = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.DesktopLocation)[0]
 
 # Window classes
 class mainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -134,7 +135,7 @@ def showEditor():
 
 def importCSV():
     try:
-        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV files(*.csv)")[0]
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', desktopLoc, "CSV files(*.csv)")[0]
     except:
         print("No file found")
     if filename:
@@ -155,7 +156,7 @@ def importCSV():
 def exportCSV():
     global dfEditor
     try:
-        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', os.getcwd(), "CSV Files(*.csv)")[0]
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', desktopLoc, "CSV Files(*.csv)")[0]
         print(filename)
         dfEditor.to_csv(str(filename), index=False)
     except:
@@ -273,7 +274,7 @@ def openFile():
     global df
     global fileLoaded
     try:
-        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', os.getcwd(), "CSV or Excel files (*.csv *.xlsx)")[0]
+        filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Select Dir', desktopLoc, "CSV or Excel files (*.csv *.xlsx)")[0]
     except:
         print("No file found")
     if filename:
@@ -528,7 +529,7 @@ def cellTest():
 def saveFile():
     global dfNew
     try:
-        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', os.getcwd(), "CSV Files(*.csv)")[0]
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, 'Save File', desktopLoc, "CSV Files(*.csv)")[0]
         print(filename)
         dfNew.to_csv(str(filename), index=False)
     except:
