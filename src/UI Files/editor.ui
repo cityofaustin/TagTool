@@ -23,14 +23,14 @@
       <item>
        <widget class="QPushButton" name="btn_newEntry">
         <property name="text">
-         <string>New Entry</string>
+         <string>New Category</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btn_deleteEntry">
         <property name="text">
-         <string>Delete Entry</string>
+         <string>Delete Category</string>
         </property>
        </widget>
       </item>

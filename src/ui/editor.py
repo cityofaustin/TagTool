@@ -86,8 +86,8 @@ class Ui_editorWindow(object):
     def retranslateUi(self, editorWindow):
         _translate = QtCore.QCoreApplication.translate
         editorWindow.setWindowTitle(_translate("editorWindow", "Keyword Editor"))
-        self.btn_newEntry.setText(_translate("editorWindow", "New Entry"))
-        self.btn_deleteEntry.setText(_translate("editorWindow", "Delete Entry"))
+        self.btn_newEntry.setText(_translate("editorWindow", "New Category"))
+        self.btn_deleteEntry.setText(_translate("editorWindow", "Delete Category"))
         self.btn_save.setText(_translate("editorWindow", "Save Default and Close"))
         self.btnImport.setText(_translate("editorWindow", "Import CSV"))
         self.btnExport.setText(_translate("editorWindow", "Export CSV"))

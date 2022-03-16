@@ -2,8 +2,7 @@
 TagTool - 2022
 author: SappI
 '''
-from csv import excel
-from fnmatch import fnmatch
+
 import os
 import pandas as pd
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -19,9 +18,11 @@ from ui.newItem import Ui_newItemWindow
 from ui.pageSelect import Ui_pageWindow
 
 # Update this with each release
+appName = "TagTool"
 versionNumber = "1.5.0"
 appPath = os.path.dirname(__file__)
 platName = platform.system()
+dataLoc = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.DataLocation)[0] + f'/{appName}'
 
 # Window classes
 class mainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -580,6 +581,8 @@ editorStatusBar = uiEditor.statusbar
 
 # Load in the image data from res.dat
 loadData()
+
+print(dataLoc)
 
 # Show main window and exec the program
 ui.show()
