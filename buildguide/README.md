@@ -6,11 +6,11 @@
 
 ## Python Release
 
-If you want to just run the Python file directly, it is highly suggested you [set up a Virtual Environment](https://python.land/virtual-environments/virtualenv) and [use the requirements.txt](https://note.nkmk.me/en/python-pip-install-requirements/) to install the needed plugins. You can then simply run main.py to run the application. This results in a smaller file size and quicker startup time. This version is not user friendly and not as easy to distribute to end users. Use this version if you are experiened in Python as it should run on any OS that supports the QT framework (Windows, Mac, Linux, various Unix platforms). Also note that if you don't install the required libraries in requirements.txt the application may crash when trying to perform certain operations. For easy user friendly deployment, please look at downloading one of the OS builds in the releases section.
+If you want to just run the Python file directly, it is highly suggested you [set up a Virtual Environment](https://python.land/virtual-environments/virtualenv) and [use the requirements.txt](https://note.nkmk.me/en/python-pip-install-requirements/) to install the needed plugins. You can then simply run main.py to run the application. This results in a smaller file size and quicker startup time. This version is not user friendly and not as easy to distribute to end users. Use this version if you are experienced in Python as it should run on any OS that supports the QT framework (Windows, Mac, Linux, various Unix platforms). Also note that if you don't install the required libraries in requirements.txt the application may crash when trying to perform certain operations. For easy user friendly deployment, please look at downloading one of the OS builds in the releases section.
 
 ### Editing or creating new UI
 
-TagTool uses the PyQT5 libary for it's user interface. [QT Designer](https://build-system.fman.io/qt-designer-download) was used to create the UI files in this project. They are in the **src folder** under **UI Files**. Once a UI file is saved you will have to run the following command (assuming you have **PYQT5** installed via PIP):
+TagTool uses the PyQT5 library for its user interface. [QT Designer](https://build-system.fman.io/qt-designer-download) was used to create the UI files in this project. They are in the **src folder** under **UI Files**. Once a UI file is saved you will have to run the following command (assuming you have **PYQT5** installed via PIP):
 
 ```
 pyuic5 -x input.ui -o output.py
