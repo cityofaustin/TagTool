@@ -19,7 +19,7 @@ from ui.pageSelect import Ui_pageWindow
 
 # Update this with each release
 appName = "TagTool"
-versionNumber = "1.5.0"
+versionNumber = "1.6.0"
 appPath = os.path.dirname(__file__)
 platName = platform.system()
 dataLoc = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.DataLocation)[0] + f'/{appName}'
@@ -99,6 +99,7 @@ iconDict = {}
 
 # Initialize the app
 app = QtWidgets.QApplication([])
+app.setStyle("Fusion")
 
 # Create a DF
 def createDF(fName):
@@ -229,6 +230,7 @@ def selectPage(fName):
     # Read in the excel file and get the sheet name based off
     # xls's index to pageNum
     dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+    dfPage.fillna('', inplace=True)
     write_dt_to_pageSelect(dfPage, pageTable)
     uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
 
@@ -245,6 +247,7 @@ def changePage(isBack = False):
                 # so we can access page names.
                 xls = pd.ExcelFile(excelFile)
                 dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+                dfPage.fillna('', inplace=True)
                 write_dt_to_pageSelect(dfPage, pageTable)
                 uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
         else:
@@ -254,6 +257,7 @@ def changePage(isBack = False):
                 # so we can access page names.
                 xls = pd.ExcelFile(excelFile)
                 dfPage = pd.read_excel(excelFile, sheet_name=xls.sheet_names[pageNum])
+                dfPage.fillna('', inplace=True)
                 write_dt_to_pageSelect(dfPage, pageTable)
                 uiPageSelect.lblPageNum.setText(f"Page {pageNum + 1}")
     except:
@@ -266,6 +270,7 @@ def openPage():
     # Store the contents of dfPage into the primary
     # df object and write it to the table.
     df = dfPage
+    df.fillna('', inplace=True)
     write_dt_to_qTable(df, table)
     ui.btnSetColumn.setEnabled(True)
 
@@ -281,6 +286,7 @@ def openFile():
         if ".csv" in filename:
             try:
                 df = createDF(filename)
+                df.fillna('', inplace=True)
                 write_dt_to_qTable(df, table)
                 fileLoaded = True
                 ui.btnSetColumn.setEnabled(True)
@@ -292,6 +298,7 @@ def openFile():
             # load that into the DF
             if len(xls.sheet_names) == 1:
                 df = createDF(filename)
+                df.fillna('', inplace=True)
                 write_dt_to_qTable(df, table)
                 fileLoaded = True
                 ui.btnSetColumn.setEnabled(True)
