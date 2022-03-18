@@ -3,6 +3,7 @@ TagTool - 2022
 author: SappI
 '''
 
+from distutils.log import error
 import os
 import pandas as pd
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -199,15 +200,18 @@ def saveAndClose():
             dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
         uiEditor.close()
     except:
-        errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.")
+        errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.\nPlease make sure to export to csv to temporarily backup the category list.", "Error")
 
 def saveDefault():
     global df
-    if platName == 'Darwin':
-        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
-    else:
-        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
-    setEditorStatus("Default config saved")
+    try:
+        if platName == 'Darwin':
+            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
+        else:
+            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
+        setEditorStatus("Default config saved")
+    except:
+        errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.\nPlease make sure to export to csv to temporarily backup the category list.", "Error")
 
 def setEditorStatus(text):
     editorStatusBar.showMessage(text)
