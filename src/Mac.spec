@@ -43,6 +43,6 @@ coll = COLLECT(exe,
                upx_exclude=[],
                name='TagTool')
 app = BUNDLE(coll,
-             name='TagTool',
+             name='TagTool.app',
              icon='icon.icns',
              bundle_identifier=None)

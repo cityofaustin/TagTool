@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main.ui'
+# Form implementation generated from reading ui file 'mainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -32,11 +32,6 @@ class Ui_MainWindow(object):
         self.btnTagAll.setToolTip("")
         self.btnTagAll.setObjectName("btnTagAll")
         self.horizontalLayout.addWidget(self.btnTagAll)
-        self.btnTagEach = QtWidgets.QPushButton(self.centralwidget)
-        self.btnTagEach.setEnabled(False)
-        self.btnTagEach.setToolTip("")
-        self.btnTagEach.setObjectName("btnTagEach")
-        self.horizontalLayout.addWidget(self.btnTagEach)
         self.btn_save = QtWidgets.QPushButton(self.centralwidget)
         self.btn_save.setEnabled(False)
         self.btn_save.setObjectName("btn_save")
@@ -44,9 +39,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setWordWrap(True)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(0)
         self.tableWidget.setRowCount(0)
+        self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
         self.verticalLayout.addWidget(self.tableWidget)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
@@ -78,6 +75,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         self.toolBar.setMovable(False)
+        self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -123,8 +121,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "TagTool"))
         self.btnSetColumn.setText(_translate("MainWindow", "Set Active Column"))
-        self.btnTagAll.setText(_translate("MainWindow", "Tag All"))
-        self.btnTagEach.setText(_translate("MainWindow", "Tag Individual"))
+        self.btnTagAll.setText(_translate("MainWindow", "Tag"))
         self.btn_save.setText(_translate("MainWindow", "Save File"))
         self.txtActiveStat.setText(_translate("MainWindow", "No Active Column selected"))
         self.menuOpen.setTitle(_translate("MainWindow", "File"))

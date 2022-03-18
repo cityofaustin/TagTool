@@ -20,7 +20,7 @@ from ui.pageSelect import Ui_pageWindow
 
 # Update this with each release
 appName = "TagTool"
-versionNumber = "1.6.0"
+versionNumber = "1.6.0 Pre-Release"
 appPath = os.path.dirname(__file__)
 platName = platform.system()
 dataLoc = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.DataLocation)[0] + f'/{appName}'
@@ -38,7 +38,7 @@ class mainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.act_editor.triggered.connect(showEditor)
         self.btnSetColumn.clicked.connect(setCol)
         self.btnTagAll.clicked.connect(tagAll)
-        self.btnTagEach.clicked.connect(tagEach)
+        #self.btnTagEach.clicked.connect(tagEach)
         self.btn_save.clicked.connect(saveFile)
         self.menu_openFile.triggered.connect(openFile)
         self.menu_keywordEditor.triggered.connect(showEditor)
@@ -194,10 +194,7 @@ def createNewItem():
 def saveAndClose():
     global dfEditor
     try:
-        if platName == 'Darwin':
-            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
-        else:
-            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
+        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
         uiEditor.close()
     except:
         errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.\nPlease make sure to export to csv to temporarily backup the category list.", "Error")
@@ -205,10 +202,7 @@ def saveAndClose():
 def saveDefault():
     global df
     try:
-        if platName == 'Darwin':
-            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
-        else:
-            dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
+        dfEditor.to_json(f'{dataLoc}/default.json', orient='records')
         setEditorStatus("Default config saved")
     except:
         errorMessage("Error saving default.json\nYou may not have sufficient write access to the default directory.\nPlease make sure to export to csv to temporarily backup the category list.", "Error")
@@ -328,10 +322,12 @@ def tagAll():
     # Convert all data to string. Function crashes if its another datatype
     dfNew = dfNew.astype(str)
 
-    if platName == 'Darwin':
+    try:
         dfJson = pd.read_json(f'{dataLoc}/default.json')
-    else:
-        dfJson = pd.read_json(f'{dataLoc}/default.json')
+    except:
+        print("Error reading json")
+
+    print(dfJson)
 
     check = False
     commentList = []
@@ -350,6 +346,7 @@ def tagAll():
         for index, row in dfJson.iterrows():
             blacklistWords = row['Blacklist'].split(",")
             keywords = row['Keywords'].split(",")
+            print(keywords)
             category = row['Category']
             check = False
 
@@ -357,7 +354,7 @@ def tagAll():
             # If match, delete that word before we perform a search
             for word in blacklistWords:
                 if len(word) > 0:
-                    if word in string.lower():
+                    if word.lower() in string.lower():
                         string = string.replace(word, '')
 
             # Loop through the keywords and look for a match
@@ -366,7 +363,7 @@ def tagAll():
             # twice.
             for word in keywords:                
                 if len(word) > 0:
-                    if word in string.lower() and check == False:
+                    if word.lower() in string.lower() and check == False:
                         if len(dfNew['Topic Categories'].iloc[stringIndex]) < 1:
                             dfNew['Topic Categories'].iloc[stringIndex] = category
                         else:
@@ -392,10 +389,9 @@ def tagEach():
 
     dfNew = dfNew.astype(str)
 
-    if platName == 'Darwin':
-        dfJson = pd.read_json(f'{dataLoc}/default.json')
-    else:
-        dfJson = pd.read_json(f'{dataLoc}/default.json')
+
+    dfJson = pd.read_json(f'{dataLoc}/default.json')
+
     check = False
     commentList = []
     
@@ -440,7 +436,7 @@ def clearTable():
     df = pd.DataFrame(None)
     write_dt_to_qTable(df, table)
     ui.btnTagAll.setEnabled(False)
-    ui.btnTagEach.setEnabled(False)
+    #ui.btnTagEach.setEnabled(False)
     ui.btnSetColumn.setEnabled(False)
     ui.txtActiveStat.setText('No Active Column selected')
     activeColumn = 0
@@ -454,7 +450,7 @@ def setCol():
     table.clearSelection()
     ui.txtActiveStat.setText(f'The current active column is {activeColumn + 1}')
     ui.btnTagAll.setEnabled(True)
-    ui.btnTagEach.setEnabled(True)
+    #ui.btnTagEach.setEnabled(True)
     print(activeColumn)
 
 def closeEditor():
@@ -465,11 +461,7 @@ def populateEditor():
     global editorLoaded
     editorLoaded = False
     try:
-        if platName == 'Darwin':
-            dfEditor = pd.read_json(f'{dataLoc}/default.json')
-        else:
-            dfEditor = pd.read_json(f'{dataLoc}/default.json')
-
+        dfEditor = pd.read_json(f'{dataLoc}/default.json')
         write_dt_to_Editor(dfEditor, editorTable)
         editorLoaded = True
     except:
@@ -601,8 +593,8 @@ editorStatusBar = uiEditor.statusbar
 
 # Load in the image data from res.dat
 loadData()
-
 print(dataLoc)
+
 
 if os.path.exists(dataLoc):
     if not os.path.exists(f'{dataLoc}/default.json'):
@@ -611,7 +603,6 @@ else:
     print("Location doesn't exist... creating!")
     os.makedirs(dataLoc)
     createDefaultJSON()
-
 
 # Show main window and exec the program
 ui.show()
